@@ -18,85 +18,62 @@ This project is built as a hackathon-ready, deployable application with a focus 
 - **Resource Directories**: Access to video tutorials and a directory of a local organic suppliers.
 - **Feedback System**: Users can submit feedback directly to the admin.
 - **Light & Dark Mode**: A theme toggle for user comfort, with the preference saved locally.
-- **Adjustable Font Size**: Users can increase or decrease the font size for better readability.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 19 + TypeScript (without a build step, using ES modules)
+- **Frontend**: React 19 + TypeScript + Vite
 - **Backend**: Supabase (Auth, Database, Storage)
-- **Styling**: Tailwind CSS (via CDN)
+- **Styling**: Tailwind CSS
 - **AI Service**: Google Gemini API
 - **PWA**: Implemented with a custom Service Worker and a Web App Manifest.
-- **PDF Generation**: `html2canvas` and `jspdf` for client-side report downloads.
 - **Speech**: Native Web Speech API for voice recognition and synthesis.
 
 ## 🚀 Getting Started
 
-This project consists of a static frontend and a Supabase backend. Follow these steps to get everything running.
+This project consists of a Vite-based frontend and a Supabase backend. Follow these steps to get everything running.
 
 ### 1. Set Up the Supabase Backend
 
-Before running the frontend, you need to create the database tables and storage.
-
 1.  **Create a Supabase Project**:
     *   Go to [supabase.com](https://supabase.com) and create a new project.
-    *   Once the project is created, go to **Project Settings** (the gear icon in the left sidebar) -> **API**.
     *   Save your **Project URL** and **anon public key**.
 
 2.  **Run the Database Schema Script**:
-    *   In your Supabase project dashboard, find the **SQL Editor** in the left sidebar (it has a database icon).
-    *   Click **"+ New query"**.
-    *   Open the `supabase/schema.sql` file that is included in this project.
-    *   Copy the **entire contents** of that file.
-    *   Paste the script into the Supabase SQL Editor.
-    *   Click the green **"RUN"** button. This will create all the necessary tables, relationships, and security policies in a few seconds.
+    *   In your Supabase project dashboard, find the **SQL Editor**.
+    *   Open the `supabase/schema.sql` file (if provided) or manually create tables.
+    *   Paste the schema script and run it. This will create all necessary tables and security policies.
 
 3.  **Update Frontend with Supabase Keys**:
-    *   Open the `lib/supabaseClient.ts` file in your code editor.
-    *   Replace the placeholder `supabaseUrl` and `supabaseAnonKey` with the actual keys you saved in the first step.
+    *   Open the `src/lib/supabaseClient.ts` file.
+    *   Replace the placeholder `supabaseUrl` and `supabaseAnonKey` with your actual keys.
 
 ### 2. Run the Frontend Locally
 
-This project does not require a complex local build step.
-
-1.  **Clone the repository or download the files.**
-2.  If you have VS Code with the **Live Server** extension:
-    -   Right-click on `index.html`.
-    -   Select "Open with Live Server".
-3.  Alternatively, use any simple HTTP server. For example, with Python:
+1.  **Install Dependencies**:
     ```bash
-    # Make sure you are in the project's root directory
-    python -m http.server
+    npm install
     ```
-4.  Open your browser and navigate to the local address provided (e.g., `http://localhost:8000`).
-
-## 🎭 Demo Mode & Usage
-
-The application has two user roles. You will need to create your own users in your Supabase project.
-
-### Creating an Admin User
-
-By default, all new users are registered with the 'employee' role. To create an admin:
-1.  Register a new user through the app's 'Register' page.
-2.  Go to your Supabase project dashboard and navigate to **Table Editor** > **profiles**.
-3.  Find the new user you just created and change their `role` from `employee` to `admin`.
-4.  Log in with this user to access the Admin Dashboard.
-
-### Employee (Farmer) User
-
-1.  Navigate to the **Register** page.
-2.  Fill in a name, email, and password.
-3.  After successful registration, log in with the new credentials to access the farmer dashboard.
+2.  **Create Environment File**:
+    *   Create a file named `.env.local` in the root of your project.
+    *   Add your Google Gemini API key to this file:
+    ```
+    VITE_API_KEY=YOUR_GEMINI_API_KEY_HERE
+    ```
+3.  **Run the Development Server**:
+    ```bash
+    npm run dev
+    ```
+4.  Open your browser and navigate to the local address provided (e.g., `http://localhost:5173`).
 
 ## ☁️ Deployment to Netlify
 
-Deploying this static application is simple.
-
-1.  **Create a Git Repository**: Push the project files to a new repository on GitHub, GitLab, or Bitbucket.
-2.  **Sign up/Log in to Netlify**.
-3.  On your Netlify dashboard, click **"Add new site"** -> **"Import an existing project"**.
-4.  **Connect to your Git provider** and select the repository.
-5.  **Deployment Settings**: Leave the build settings empty.
-    -   **Build command**: (leave blank)
-    -   **Publish directory**: (leave blank, or set to `/`)
-6.  Click **"Deploy site"**. Netlify will deploy your `index.html` and all other assets, giving you a live URL.
+1.  **Push to a Git Repository**: Push the project to GitHub, GitLab, or Bitbucket.
+2.  **Import to Netlify**: On Netlify, import the project from your Git provider.
+3.  **Deployment Settings**: Configure the build settings as follows:
+    -   **Build command**: `npm run build`
+    -   **Publish directory**: `dist`
+4.  **Environment Variables**:
+    *   Go to **Site settings** > **Build & deploy** > **Environment**.
+    *   Add your environment variables:
+        - `VITE_API_KEY`: Your Google Gemini API Key.
+5.  Click **"Deploy site"**. Netlify will build your project and deploy the `dist` folder.

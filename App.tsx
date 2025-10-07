@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { AppContextProvider, useAppContext } from './context/AppContext';
 import Header from './components/Header';
@@ -142,7 +143,8 @@ const App = () => {
 
     return (
         <AppContextProvider>
-            <div className="flex flex-col min-h-screen bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark font-body">
+            {/* FIX: Replaced undefined 'font-body' with 'font-sans' as defined in tailwind.config.js */}
+            <div className="flex flex-col min-h-screen bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark font-sans">
                 {!isAuthPage && <Header />}
                 <OfflineBanner />
                 <SyncSuccessBanner />
