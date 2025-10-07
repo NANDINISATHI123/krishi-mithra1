@@ -1,12 +1,10 @@
-
-
 import { Report } from '../types';
-// FIX: Use the correct `GoogleGenAI` class as per guidelines.
 import { GoogleGenAI, Type } from '@google/genai';
 
 // Simulate a network delay
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
+// FIX: Per Gemini guidelines, the API key must be read from process.env.API_KEY
 const API_KEY = process.env.API_KEY;
 
 // Helper function to convert a File object to a GoogleGenerativeAI.Part object.
@@ -27,9 +25,9 @@ type DiagnosisResult = Omit<Report, 'id' | 'user_id' | 'user_email' | 'created_a
 // --- Real AI Diagnosis using Gemini API ---
 export const getRealDiagnosis = async (imageFile: File): Promise<DiagnosisResult> => {
     if (!API_KEY) {
-        throw new Error("Gemini API key not found.");
+        // FIX: Updated error message to reflect the correct environment variable name.
+        throw new Error("Gemini API key not found in API_KEY environment variable.");
     }
-    // FIX: Use the correct `GoogleGenAI` class as per guidelines.
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const imagePart = await fileToGenerativePart(imageFile);
@@ -72,7 +70,6 @@ Do not add any text or explanation outside of the JSON structure.`;
 
     try {
         const response = await ai.models.generateContent({
-          // FIX: Use the correct model name as per guidelines.
           model: 'gemini-2.5-flash',
           contents: { parts: [imagePart, { text: prompt }] },
           config: {
@@ -118,14 +115,12 @@ export const generateThumbnail = async (title: string, description: string): Pro
         console.warn("Gemini API key not found, skipping thumbnail generation.");
         return '';
     }
-    // FIX: Use the correct `GoogleGenAI` class as per guidelines.
     const ai = new GoogleGenAI({ apiKey: API_KEY });
 
     const prompt = `A vibrant, high-quality, photorealistic thumbnail for a farmer's educational video. The video is titled "${title}" and covers "${description}". The image should be visually appealing, relevant to organic farming, and must not contain any text. The aspect ratio must be 16:9.`;
     
     try {
         const response = await ai.models.generateImages({
-            // FIX: Use the correct image generation model as per guidelines.
             model: 'imagen-4.0-generate-001',
             prompt: prompt,
             config: {
